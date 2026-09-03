@@ -21,7 +21,7 @@ export const OnionRateVideo: React.FC<{ data: VideoData }> = ({ data }) => {
 
   const records = data?.records || [];
 
-  // १. टॉप ५ कमाल भाव (Max Price नुसार High to Low)
+  // १. टॉप ५ कमाल भाव
   const topPrices = [...records]
     .sort((a, b) => {
       const pA = parseFloat(String(a.max_price).replace(/[^0-9.-]+/g, "")) || 0;
@@ -30,14 +30,13 @@ export const OnionRateVideo: React.FC<{ data: VideoData }> = ({ data }) => {
     })
     .slice(0, 5);
 
-  // २. संपूर्ण डेटा आवक (Quantity) नुसार High to Low सॉर्ट करणे
+  // २. संपूर्ण डेटा आवक (Quantity) High to Low नुसार
   const sortedByQuantity = [...records].sort((a, b) => {
     const qA = parseFloat(String(a.quantity).replace(/[^0-9.-]+/g, "")) || 0;
     const qB = parseFloat(String(b.quantity).replace(/[^0-9.-]+/g, "")) || 0;
     return qB - qA;
   });
 
-  // टॉप ५ आवक (डॅशबोर्डसाठी)
   const topArrivals = sortedByQuantity.slice(0, 5);
 
   const totalQty = records.reduce((acc, curr) => acc + (parseFloat(curr.quantity) || 0), 0);
@@ -45,21 +44,13 @@ export const OnionRateVideo: React.FC<{ data: VideoData }> = ({ data }) => {
     ? Math.round(records.reduce((acc, curr) => acc + (parseFloat(curr.avg_price) || 0), 0) / records.length)
     : 0;
 
-  // ३. आवक High to Low नुसार १४-१४ चे ४ लॉट्स
+  // १४ - १४ चे ४ लॉट्स
   const slide1 = sortedByQuantity.slice(0, 14);
   const slide2 = sortedByQuantity.slice(14, 28);
   const slide3 = sortedByQuantity.slice(28, 42);
   const slide4 = sortedByQuantity.slice(42, 56);
 
-  // ४० सेकंदांची टाइमलाइन (३० FPS = १२०० फ्रेम्स):
-  // ० ते ९० (०-३ सेकंद): इंट्रो (एकूण आवक + सरासरी भाव)
-  // ९० ते २७० (३-९ सेकंद): टॉप ५ भाव + टॉप ५ आवक डॅशबोर्ड
-  // २७० ते ४८० (९-१६ सेकंद): स्लाईड १ (१ ते १४)
-  // ४८० ते ६९० (१६-२३ सेकंद): स्लाईड २ (१५ ते २८)
-  // ६९० ते ९०० (२३-३० सेकंद): स्लाईड ३ (२९ ते ४२)
-  // ९०० ते १११० (३०-३७ सेकंद): स्लाईड ४ (४३ ते ५६)
-  // १११० ते १२०० (३७-४० सेकंद): आउट्रो
-
+  // ४० सेकंदांची फास्ट टाइमलाइन (३० FPS = १२०० फ्रेम्स):
   const isIntro = frame < 90;
   const isDashboard = frame >= 90 && frame < 270;
   const isSlide1 = frame >= 270 && frame < 480;
@@ -85,7 +76,7 @@ export const OnionRateVideo: React.FC<{ data: VideoData }> = ({ data }) => {
         color: "#ffffff",
       }}
     >
-      {/* Background Subtle Gradient */}
+      {/* Background Gradient */}
       <div
         style={{
           position: "absolute",
@@ -95,16 +86,16 @@ export const OnionRateVideo: React.FC<{ data: VideoData }> = ({ data }) => {
         }}
       />
 
-      {/* १. हेडर (Top Fixed Header) */}
+      {/* १. हेडर (Top Header - उंची 120px) */}
       <div
         style={{
           position: "absolute",
-          top: 35,
-          left: 30,
-          right: 30,
+          top: 30,
+          left: 24,
+          right: 24,
           backgroundColor: "#b91c1c",
           padding: "16px 24px",
-          borderRadius: 20,
+          borderRadius: 18,
           boxShadow: "0 10px 30px rgba(0,0,0,0.6)",
           textAlign: "center",
           border: "2px solid rgba(255,255,255,0.15)",
@@ -119,7 +110,7 @@ export const OnionRateVideo: React.FC<{ data: VideoData }> = ({ data }) => {
             display: "flex",
             justifyContent: "space-between",
             marginTop: 8,
-            fontSize: 24,
+            fontSize: 25,
             color: "#fef08a",
             fontWeight: 700,
           }}
@@ -134,27 +125,28 @@ export const OnionRateVideo: React.FC<{ data: VideoData }> = ({ data }) => {
         <div
           style={{
             position: "absolute",
-            top: 250,
-            left: 35,
-            right: 35,
+            top: 200,
+            bottom: 450,
+            left: 24,
+            right: 24,
             display: "flex",
             flexDirection: "column",
-            gap: 45,
+            justifyContent: "space-evenly",
           }}
         >
           <div
             style={{
               backgroundColor: "rgba(30, 41, 59, 0.95)",
               padding: "70px 30px",
-              borderRadius: 28,
+              borderRadius: 24,
               textAlign: "center",
               border: "3px solid #38bdf8",
               boxShadow: "0 15px 40px rgba(56, 189, 248, 0.25)",
             }}
           >
             <div style={{ fontSize: 36, color: "#94a3b8", fontWeight: 700 }}>आजची एकूण नोंद झालेली आवक</div>
-            <div style={{ fontSize: 88, color: "#38bdf8", fontWeight: 900, marginTop: 20 }}>
-              {totalQty.toLocaleString("en-IN")} <span style={{ fontSize: 42 }}>क्विंटल</span>
+            <div style={{ fontSize: 90, color: "#38bdf8", fontWeight: 900, marginTop: 15 }}>
+              {totalQty.toLocaleString("en-IN")} <span style={{ fontSize: 44 }}>क्विंटल</span>
             </div>
           </div>
 
@@ -162,39 +154,49 @@ export const OnionRateVideo: React.FC<{ data: VideoData }> = ({ data }) => {
             style={{
               backgroundColor: "rgba(30, 41, 59, 0.95)",
               padding: "70px 30px",
-              borderRadius: 28,
+              borderRadius: 24,
               textAlign: "center",
               border: "3px solid #4ade80",
               boxShadow: "0 15px 40px rgba(74, 222, 128, 0.25)",
             }}
           >
             <div style={{ fontSize: 36, color: "#94a3b8", fontWeight: 700 }}>राज्याचा सरासरी मॉडेल भाव</div>
-            <div style={{ fontSize: 88, color: "#4ade80", fontWeight: 900, marginTop: 20 }}>
-              ₹{avgStatePrice} <span style={{ fontSize: 42 }}>/ क्विंटल</span>
+            <div style={{ fontSize: 90, color: "#4ade80", fontWeight: 900, marginTop: 15 }}>
+              ₹{avgStatePrice} <span style={{ fontSize: 44 }}>/ क्विंटल</span>
             </div>
           </div>
         </div>
       )}
 
-      {/* ३. डॅशबोर्ड (३ ते ९ सेकंद) - मोठा लेआउट, रिकामा गॅप काढला */}
+      {/* ३. डॅशबोर्ड (३ ते ९ सेकंद) - वरून खालपर्यंत पूर्ण जागा व्यापलेली (Zero Gap) */}
       {isDashboard && (
-        <div style={{ position: "absolute", top: 175, left: 30, right: 30 }}>
-          {/* Top 5 Prices */}
-          <div
-            style={{
-              backgroundColor: "#d97706",
-              color: "#fff",
-              padding: "14px 20px",
-              borderRadius: 14,
-              fontSize: 26,
-              fontWeight: 800,
-              textAlign: "center",
-              marginBottom: 10,
-            }}
-          >
-            🏆 आजचे टॉप ५ सर्वाधिक भाव (कमाल दर)
-          </div>
-          <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 28 }}>
+        <div
+          style={{
+            position: "absolute",
+            top: 175,
+            bottom: 435,
+            left: 24,
+            right: 24,
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-between",
+          }}
+        >
+          {/* Top 5 Prices Section */}
+          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+            <div
+              style={{
+                backgroundColor: "#d97706",
+                color: "#fff",
+                padding: "12px 18px",
+                borderRadius: 14,
+                fontSize: 26,
+                fontWeight: 800,
+                textAlign: "center",
+              }}
+            >
+              🏆 आजचे टॉप ५ सर्वाधिक भाव (कमाल दर)
+            </div>
             {topPrices.map((item, idx) => (
               <div
                 key={idx}
@@ -210,29 +212,28 @@ export const OnionRateVideo: React.FC<{ data: VideoData }> = ({ data }) => {
               >
                 <div style={{ fontSize: 27, fontWeight: 800 }}>
                   <span style={{ color: "#f59e0b", marginRight: 14 }}>#{idx + 1}</span>
-                  {item.market} <span style={{ fontSize: 20, color: "#94a3b8" }}>({item.variety})</span>
+                  {item.market} <span style={{ fontSize: 21, color: "#94a3b8" }}>({item.variety})</span>
                 </div>
-                <div style={{ fontSize: 34, color: "#4ade80", fontWeight: 900 }}>₹{item.max_price}</div>
+                <div style={{ fontSize: 36, color: "#4ade80", fontWeight: 900 }}>₹{item.max_price}</div>
               </div>
             ))}
           </div>
 
-          {/* Top 5 Arrivals */}
-          <div
-            style={{
-              backgroundColor: "#0284c7",
-              color: "#fff",
-              padding: "14px 20px",
-              borderRadius: 14,
-              fontSize: 26,
-              fontWeight: 800,
-              textAlign: "center",
-              marginBottom: 10,
-            }}
-          >
-            🚜 सर्वाधिक आवक असणारे टॉप ५ मार्केट
-          </div>
-          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+          {/* Top 5 Arrivals Section */}
+          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+            <div
+              style={{
+                backgroundColor: "#0284c7",
+                color: "#fff",
+                padding: "12px 18px",
+                borderRadius: 14,
+                fontSize: 26,
+                fontWeight: 800,
+                textAlign: "center",
+              }}
+            >
+              🚜 सर्वाधिक आवक असणारे टॉप ५ मार्केट
+            </div>
             {topArrivals.map((item, idx) => (
               <div
                 key={idx}
@@ -248,25 +249,25 @@ export const OnionRateVideo: React.FC<{ data: VideoData }> = ({ data }) => {
               >
                 <div style={{ fontSize: 27, fontWeight: 800 }}>
                   <span style={{ color: "#38bdf8", marginRight: 14 }}>#{idx + 1}</span>
-                  {item.market} <span style={{ fontSize: 20, color: "#94a3b8" }}>(दर: ₹{item.avg_price})</span>
+                  {item.market} <span style={{ fontSize: 21, color: "#94a3b8" }}>(दर: ₹{item.avg_price})</span>
                 </div>
-                <div style={{ fontSize: 34, color: "#38bdf8", fontWeight: 900 }}>{item.quantity} क्विं.</div>
+                <div style={{ fontSize: 36, color: "#38bdf8", fontWeight: 900 }}>{item.quantity} क्विं.</div>
               </div>
             ))}
           </div>
         </div>
       )}
 
-      {/* ४. टेबल स्लाईड्स (१४ मार्केट - आवक High to Low क्रमाने, पूर्ण स्क्रीन भरून) */}
+      {/* ४. टेबल स्लाईड्स (१४ मार्केट - वरून थेट खालच्या ॲड बॅनरपर्यंत अखंड विस्तार) */}
       {isTableSlide && (
-        <div style={{ position: "absolute", top: 175, left: 24, right: 24 }}>
+        <div style={{ position: "absolute", top: 175, left: 24, right: 24, bottom: 435, display: "flex", flexDirection: "column" }}>
           {/* Table Header Bar */}
           <div
             style={{
               display: "flex",
               justifyContent: "space-between",
               alignItems: "center",
-              marginBottom: 10,
+              marginBottom: 8,
               padding: "0 8px",
             }}
           >
@@ -281,7 +282,7 @@ export const OnionRateVideo: React.FC<{ data: VideoData }> = ({ data }) => {
               padding: "14px 16px",
               borderRadius: "14px 14px 0 0",
               fontWeight: 800,
-              fontSize: 23,
+              fontSize: 24,
               color: "#cbd5e1",
               borderBottom: "3px solid #334155",
             }}
@@ -294,13 +295,17 @@ export const OnionRateVideo: React.FC<{ data: VideoData }> = ({ data }) => {
             <div style={{ flex: 1.4, textAlign: "center", color: "#4ade80" }}>सरासरी</div>
           </div>
 
-          {/* १४ Rows Container - उंची ६६px करून रिकामा गॅप काढला */}
+          {/* १४ Rows Container - प्रत्येक रो ची उंची ७३px करून खालच्या ॲडपर्यंत अचूक ताणले आहे */}
           <div
             style={{
+              flex: 1,
               backgroundColor: "rgba(15, 23, 42, 0.88)",
               borderRadius: "0 0 14px 14px",
               overflow: "hidden",
               border: "1px solid rgba(255,255,255,0.08)",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "space-between",
             }}
           >
             {currentSlideData.map((item, index) => (
@@ -310,18 +315,18 @@ export const OnionRateVideo: React.FC<{ data: VideoData }> = ({ data }) => {
                   display: "flex",
                   alignItems: "center",
                   padding: "0 16px",
-                  height: "66px",
+                  height: "73px",
                   boxSizing: "border-box",
                   backgroundColor: index % 2 === 0 ? "rgba(255,255,255,0.02)" : "rgba(255,255,255,0.06)",
                   borderBottom: "1px solid rgba(255,255,255,0.06)",
-                  fontSize: 24,
+                  fontSize: 25,
                   fontWeight: 700,
                 }}
               >
                 <div style={{ flex: 2.3, color: "#ffffff", fontWeight: 800, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
                   {item.market}
                 </div>
-                <div style={{ flex: 1.1, textAlign: "center", color: "#94a3b8", fontSize: 20 }}>
+                <div style={{ flex: 1.1, textAlign: "center", color: "#94a3b8", fontSize: 21 }}>
                   {item.variety || "लोकल"}
                 </div>
                 <div style={{ flex: 1.3, textAlign: "center", color: "#38bdf8", fontWeight: 900 }}>
@@ -329,7 +334,7 @@ export const OnionRateVideo: React.FC<{ data: VideoData }> = ({ data }) => {
                 </div>
                 <div style={{ flex: 1.1, textAlign: "center", color: "#f87171" }}>₹{item.min_price}</div>
                 <div style={{ flex: 1.1, textAlign: "center", color: "#38bdf8" }}>₹{item.max_price}</div>
-                <div style={{ flex: 1.4, textAlign: "center", color: "#4ade80", fontWeight: 900, fontSize: 27 }}>
+                <div style={{ flex: 1.4, textAlign: "center", color: "#4ade80", fontWeight: 900, fontSize: 28 }}>
                   ₹{item.avg_price}
                 </div>
               </div>
@@ -338,16 +343,16 @@ export const OnionRateVideo: React.FC<{ data: VideoData }> = ({ data }) => {
         </div>
       )}
 
-      {/* ५. तळभागातील कायमस्वरूपी सुरक्षित जाहिरात बॅनर (YouTube/Reels Safe Zone) */}
+      {/* ५. तळभागातील कायमस्वरूपी सुरक्षित जाहिरात बॅनर (उंची ४००px - Bottom Safe Zone) */}
       {!isOutro && (
         <div
           style={{
             position: "absolute",
-            bottom: 35,
+            bottom: 25,
             left: 24,
             right: 24,
-            height: "360px",
-            backgroundColor: "rgba(15, 23, 42, 0.96)",
+            height: "395px",
+            backgroundColor: "rgba(15, 23, 42, 0.98)",
             borderRadius: 24,
             border: "3px dashed #eab308",
             display: "flex",
@@ -356,24 +361,24 @@ export const OnionRateVideo: React.FC<{ data: VideoData }> = ({ data }) => {
             alignItems: "center",
             textAlign: "center",
             padding: "20px 30px",
-            boxShadow: "0 -10px 40px rgba(0,0,0,0.7)",
+            boxShadow: "0 -12px 40px rgba(0,0,0,0.7)",
             zIndex: 20,
           }}
         >
-          <div style={{ fontSize: 34, fontWeight: 900, color: "#fef08a", marginBottom: 12 }}>
+          <div style={{ fontSize: 36, fontWeight: 900, color: "#fef08a", marginBottom: 14 }}>
             📢 दररोजचे ताजे कांदा बाजार भाव
           </div>
-          <div style={{ fontSize: 26, color: "#ffffff", fontWeight: 700, lineHeight: 1.4 }}>
+          <div style={{ fontSize: 28, color: "#ffffff", fontWeight: 700, lineHeight: 1.4 }}>
             दररोजच्या अचूक बाजारभावाच्या अपडेटसाठी आपल्या चॅनलला आत्ताच
           </div>
           <div
             style={{
-              marginTop: 22,
+              marginTop: 24,
               backgroundColor: "#b91c1c",
               color: "#ffffff",
-              padding: "16px 50px",
+              padding: "16px 55px",
               borderRadius: 50,
-              fontSize: 32,
+              fontSize: 34,
               fontWeight: 900,
               boxShadow: "0 8px 25px rgba(185, 28, 28, 0.7)",
               display: "flex",
