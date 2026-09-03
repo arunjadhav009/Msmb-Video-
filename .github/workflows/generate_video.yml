@@ -22,12 +22,12 @@ jobs:
       - name: Install System Fonts & Tools
         run: |
           sudo apt-get update
-          sudo apt-get install -y fonts-deva fonts-noto-extra ffmpeg
+          sudo apt-get install -y fonts-deva fonts-noto-extra ffmpeg curl
 
       - name: Install Project Dependencies
         run: npm install
 
-      # n8n चा डेटा थेट src/data.json मध्ये सेव्ह करणे
+      # १. इनपुट डेटा सेव्ह करणे
       - name: Write Input Data to File
         run: |
           node -e '
@@ -38,11 +38,19 @@ jobs:
         env:
           INPUT_DATA: ${{ github.event.inputs.video_data }}
 
-      # आता Remotion थेट त्या फाईलमधून १००% डेटा वाचेल
+      # २. टॉप ट्रेंडिंग कॉपीराइट-फ्री मोटिव्हेशनल म्युझिक थेट public फोल्डरमध्ये ऑटो-डाऊनलोड करणे
+      - name: Download Trending Copyright-Free Music
+        run: |
+          mkdir -p public
+          # YouTube आणि FB साठी सुरक्षित हाय-एनर्जी मोटिव्हेशनल ट्रॅक
+          curl -L "https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3" -o public/bg-music.mp3
+
+      # ३. व्हिडिओ रेंडर करणे
       - name: Render Remotion Video
         run: |
           npx remotion render src/index.ts OnionRateComposition out/video.mp4 --gl=angle
 
+      # ४. तयार व्हिडिओ सेव्ह करणे
       - name: Upload Rendered Video
         uses: actions/upload-artifact@v4
         with:
