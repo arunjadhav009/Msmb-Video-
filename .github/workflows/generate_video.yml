@@ -27,10 +27,16 @@ jobs:
       - name: Install Project Dependencies
         run: npm install
 
+      - name: Save JSON Data to File
+        run: |
+          cat << 'EOF' > input_data.json
+          ${{ github.event.inputs.video_data }}
+          EOF
+
       - name: Render Remotion Video
         run: |
           npx remotion render src/index.ts OnionRateComposition out/video.mp4 \
-            --props='${{ github.event.inputs.video_data }}' \
+            --props=input_data.json \
             --gl=angle
 
       - name: Upload Rendered Video
