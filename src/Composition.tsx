@@ -86,7 +86,7 @@ export const OnionRateVideo: React.FC<{ data: VideoData }> = ({ data }) => {
         }}
       />
 
-      {/* १. हेडर (Top Header - उंची 120px) */}
+      {/* १. हेडर (Top Header) */}
       <div
         style={{
           position: "absolute",
@@ -168,7 +168,7 @@ export const OnionRateVideo: React.FC<{ data: VideoData }> = ({ data }) => {
         </div>
       )}
 
-      {/* ३. डॅशबोर्ड (३ ते ९ सेकंद) - वरून खालपर्यंत पूर्ण जागा व्यापलेली (Zero Gap) */}
+      {/* ३. डॅशबोर्ड (३ ते ९ सेकंद) - दोन्ही सेक्शन्समधील गॅप पूर्णपणे भरून काढला */}
       {isDashboard && (
         <div
           style={{
@@ -183,16 +183,25 @@ export const OnionRateVideo: React.FC<{ data: VideoData }> = ({ data }) => {
           }}
         >
           {/* Top 5 Prices Section */}
-          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+          <div
+            style={{
+              flex: 1,
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "space-between",
+              marginBottom: 16,
+            }}
+          >
             <div
               style={{
                 backgroundColor: "#d97706",
                 color: "#fff",
-                padding: "12px 18px",
+                padding: "15px 18px",
                 borderRadius: 14,
-                fontSize: 26,
-                fontWeight: 800,
+                fontSize: 28,
+                fontWeight: 900,
                 textAlign: "center",
+                marginBottom: 8,
               }}
             >
               🏆 आजचे टॉप ५ सर्वाधिक भाव (कमाल दर)
@@ -201,8 +210,10 @@ export const OnionRateVideo: React.FC<{ data: VideoData }> = ({ data }) => {
               <div
                 key={idx}
                 style={{
+                  flex: 1,
+                  margin: "4px 0",
                   backgroundColor: "rgba(30, 41, 59, 0.95)",
-                  padding: "16px 24px",
+                  padding: "0 24px",
                   borderRadius: 14,
                   display: "flex",
                   justifyContent: "space-between",
@@ -210,26 +221,34 @@ export const OnionRateVideo: React.FC<{ data: VideoData }> = ({ data }) => {
                   borderLeft: "8px solid #f59e0b",
                 }}
               >
-                <div style={{ fontSize: 27, fontWeight: 800 }}>
-                  <span style={{ color: "#f59e0b", marginRight: 14 }}>#{idx + 1}</span>
-                  {item.market} <span style={{ fontSize: 21, color: "#94a3b8" }}>({item.variety})</span>
+                <div style={{ fontSize: 30, fontWeight: 800 }}>
+                  <span style={{ color: "#f59e0b", marginRight: 16 }}>#{idx + 1}</span>
+                  {item.market} <span style={{ fontSize: 23, color: "#94a3b8" }}>({item.variety})</span>
                 </div>
-                <div style={{ fontSize: 36, color: "#4ade80", fontWeight: 900 }}>₹{item.max_price}</div>
+                <div style={{ fontSize: 38, color: "#4ade80", fontWeight: 900 }}>₹{item.max_price}</div>
               </div>
             ))}
           </div>
 
           {/* Top 5 Arrivals Section */}
-          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+          <div
+            style={{
+              flex: 1,
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "space-between",
+            }}
+          >
             <div
               style={{
                 backgroundColor: "#0284c7",
                 color: "#fff",
-                padding: "12px 18px",
+                padding: "15px 18px",
                 borderRadius: 14,
-                fontSize: 26,
-                fontWeight: 800,
+                fontSize: 28,
+                fontWeight: 900,
                 textAlign: "center",
+                marginBottom: 8,
               }}
             >
               🚜 सर्वाधिक आवक असणारे टॉप ५ मार्केट
@@ -238,8 +257,10 @@ export const OnionRateVideo: React.FC<{ data: VideoData }> = ({ data }) => {
               <div
                 key={idx}
                 style={{
+                  flex: 1,
+                  margin: "4px 0",
                   backgroundColor: "rgba(30, 41, 59, 0.95)",
-                  padding: "16px 24px",
+                  padding: "0 24px",
                   borderRadius: 14,
                   display: "flex",
                   justifyContent: "space-between",
@@ -247,21 +268,20 @@ export const OnionRateVideo: React.FC<{ data: VideoData }> = ({ data }) => {
                   borderLeft: "8px solid #0284c7",
                 }}
               >
-                <div style={{ fontSize: 27, fontWeight: 800 }}>
-                  <span style={{ color: "#38bdf8", marginRight: 14 }}>#{idx + 1}</span>
-                  {item.market} <span style={{ fontSize: 21, color: "#94a3b8" }}>(दर: ₹{item.avg_price})</span>
+                <div style={{ fontSize: 30, fontWeight: 800 }}>
+                  <span style={{ color: "#38bdf8", marginRight: 16 }}>#{idx + 1}</span>
+                  {item.market} <span style={{ fontSize: 23, color: "#94a3b8" }}>(दर: ₹{item.avg_price})</span>
                 </div>
-                <div style={{ fontSize: 36, color: "#38bdf8", fontWeight: 900 }}>{item.quantity} क्विं.</div>
+                <div style={{ fontSize: 38, color: "#38bdf8", fontWeight: 900 }}>{item.quantity} क्विं.</div>
               </div>
             ))}
           </div>
         </div>
       )}
 
-      {/* ४. टेबल स्लाईड्स (१४ मार्केट - वरून थेट खालच्या ॲड बॅनरपर्यंत अखंड विस्तार) */}
+      {/* ४. टेबल स्लाईड्स (१४ मार्केट) */}
       {isTableSlide && (
         <div style={{ position: "absolute", top: 175, left: 24, right: 24, bottom: 435, display: "flex", flexDirection: "column" }}>
-          {/* Table Header Bar */}
           <div
             style={{
               display: "flex",
@@ -295,7 +315,6 @@ export const OnionRateVideo: React.FC<{ data: VideoData }> = ({ data }) => {
             <div style={{ flex: 1.4, textAlign: "center", color: "#4ade80" }}>सरासरी</div>
           </div>
 
-          {/* १४ Rows Container - प्रत्येक रो ची उंची ७३px करून खालच्या ॲडपर्यंत अचूक ताणले आहे */}
           <div
             style={{
               flex: 1,
@@ -343,7 +362,7 @@ export const OnionRateVideo: React.FC<{ data: VideoData }> = ({ data }) => {
         </div>
       )}
 
-      {/* ५. तळभागातील कायमस्वरूपी सुरक्षित जाहिरात बॅनर (उंची ४००px - Bottom Safe Zone) */}
+      {/* ५. तळभागातील कायमस्वरूपी सुरक्षित जाहिरात बॅनर (उंची ४००px) */}
       {!isOutro && (
         <div
           style={{
