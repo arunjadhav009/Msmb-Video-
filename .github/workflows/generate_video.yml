@@ -27,16 +27,21 @@ jobs:
       - name: Install Project Dependencies
         run: npm install
 
-      - name: Save JSON Data to File
+      # n8n चा डेटा थेट src/data.json मध्ये सेव्ह करणे
+      - name: Write Input Data to File
         run: |
-          echo '${{ github.event.inputs.video_data }}' > input_data.json
-          cat input_data.json
+          node -e '
+            const fs = require("fs");
+            const raw = process.env.INPUT_DATA;
+            fs.writeFileSync("src/data.json", raw, "utf8");
+          '
+        env:
+          INPUT_DATA: ${{ github.event.inputs.video_data }}
 
+      # आता Remotion थेट त्या फाईलमधून १००% डेटा वाचेल
       - name: Render Remotion Video
         run: |
-          npx remotion render src/index.ts OnionRateComposition out/video.mp4 \
-            --props=./input_data.json \
-            --gl=angle
+          npx remotion render src/index.ts OnionRateComposition out/video.mp4 --gl=angle
 
       - name: Upload Rendered Video
         uses: actions/upload-artifact@v4
