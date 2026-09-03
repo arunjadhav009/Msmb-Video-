@@ -30,7 +30,7 @@ export const OnionRateVideo: React.FC<{ data: VideoData }> = ({ data }) => {
     })
     .slice(0, 5);
 
-  // २. संपूर्ण डेटा आवक (Quantity) नुसार उतरत्या क्रमाने (High to Low) सॉर्ट करणे
+  // २. संपूर्ण डेटा आवक (Quantity) नुसार High to Low सॉर्ट करणे
   const sortedByQuantity = [...records].sort((a, b) => {
     const qA = parseFloat(String(a.quantity).replace(/[^0-9.-]+/g, "")) || 0;
     const qB = parseFloat(String(b.quantity).replace(/[^0-9.-]+/g, "")) || 0;
@@ -45,20 +45,20 @@ export const OnionRateVideo: React.FC<{ data: VideoData }> = ({ data }) => {
     ? Math.round(records.reduce((acc, curr) => acc + (parseFloat(curr.avg_price) || 0), 0) / records.length)
     : 0;
 
-  // ३. आवक हाय-टू-लो नुसार १४ - १४ चे ४ लॉट्स
+  // ३. आवक High to Low नुसार १४-१४ चे ४ लॉट्स
   const slide1 = sortedByQuantity.slice(0, 14);
   const slide2 = sortedByQuantity.slice(14, 28);
   const slide3 = sortedByQuantity.slice(28, 42);
   const slide4 = sortedByQuantity.slice(42, 56);
 
   // ४० सेकंदांची टाइमलाइन (३० FPS = १२०० फ्रेम्स):
-  // ० ते ९० (०-३ से): इंट्रो
-  // ९० ते २७० (३-९ से): टॉप ५ भाव + टॉप ५ आवक
-  // २७० ते ४८० (९-१६ से): स्लाईड १ (१ ते १४ - सर्वाधिक आवक)
-  // ४८० ते ६९० (१६-२३ से): स्लाईड २ (१५ ते २८)
-  // ६९० ते ९०० (२३-३० से): स्लाईड ३ (२९ ते ४२)
-  // ९०० ते १११० (३०-३७ से): स्लाईड ४ (४३ ते ५६ - सर्वात कमी आवक)
-  // १११० ते १२०० (३७-४० से): आउट्रो
+  // ० ते ९० (०-३ सेकंद): इंट्रो (एकूण आवक + सरासरी भाव)
+  // ९० ते २७० (३-९ सेकंद): टॉप ५ भाव + टॉप ५ आवक डॅशबोर्ड
+  // २७० ते ४८० (९-१६ सेकंद): स्लाईड १ (१ ते १४)
+  // ४८० ते ६९० (१६-२३ सेकंद): स्लाईड २ (१५ ते २८)
+  // ६९० ते ९०० (२३-३० सेकंद): स्लाईड ३ (२९ ते ४२)
+  // ९०० ते १११० (३०-३७ सेकंद): स्लाईड ४ (४३ ते ५६)
+  // १११० ते १२०० (३७-४० सेकंद): आउट्रो
 
   const isIntro = frame < 90;
   const isDashboard = frame >= 90 && frame < 270;
@@ -85,7 +85,7 @@ export const OnionRateVideo: React.FC<{ data: VideoData }> = ({ data }) => {
         color: "#ffffff",
       }}
     >
-      {/* Background Gradient */}
+      {/* Background Subtle Gradient */}
       <div
         style={{
           position: "absolute",
@@ -176,9 +176,9 @@ export const OnionRateVideo: React.FC<{ data: VideoData }> = ({ data }) => {
         </div>
       )}
 
-      {/* ३. डॅशबोर्ड (३ ते ९ सेकंद) - नो गॅप (मोठे कार्ड्स) */}
+      {/* ३. डॅशबोर्ड (३ ते ९ सेकंद) - मोठा लेआउट, रिकामा गॅप काढला */}
       {isDashboard && (
-        <div style={{ position: "absolute", top: 180, left: 30, right: 30 }}>
+        <div style={{ position: "absolute", top: 175, left: 30, right: 30 }}>
           {/* Top 5 Prices */}
           <div
             style={{
@@ -257,7 +257,7 @@ export const OnionRateVideo: React.FC<{ data: VideoData }> = ({ data }) => {
         </div>
       )}
 
-      {/* ४. टेबल स्लाईड्स (आवक High to Low नुसार क्रमवारी - No Gap) */}
+      {/* ४. टेबल स्लाईड्स (१४ मार्केट - आवक High to Low क्रमाने, पूर्ण स्क्रीन भरून) */}
       {isTableSlide && (
         <div style={{ position: "absolute", top: 175, left: 24, right: 24 }}>
           {/* Table Header Bar */}
@@ -294,7 +294,7 @@ export const OnionRateVideo: React.FC<{ data: VideoData }> = ({ data }) => {
             <div style={{ flex: 1.4, textAlign: "center", color: "#4ade80" }}>सरासरी</div>
           </div>
 
-          {/* १४ Rows Container - भरलेला आणि उंच लेआउट */}
+          {/* १४ Rows Container - उंची ६६px करून रिकामा गॅप काढला */}
           <div
             style={{
               backgroundColor: "rgba(15, 23, 42, 0.88)",
