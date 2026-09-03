@@ -19,7 +19,7 @@ export const RemotionRoot: React.FC = () => {
       <Composition
         id="OnionRateComposition"
         component={OnionRateVideo}
-        durationInFrames={1590}
+        durationInFrames={1200}
         fps={30}
         width={1080}
         height={1920}
