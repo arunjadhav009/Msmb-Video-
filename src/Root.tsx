@@ -2,7 +2,6 @@ import React from "react";
 import { Composition } from "remotion";
 import { OnionRateVideo } from "./Composition";
 
-// डेटा थेट src/data.json फाईलमधून वाचणे
 let dynamicData;
 try {
   dynamicData = require("./data.json");
@@ -20,7 +19,7 @@ export const RemotionRoot: React.FC = () => {
       <Composition
         id="OnionRateComposition"
         component={OnionRateVideo}
-        durationInFrames={840}
+        durationInFrames={1590}
         fps={30}
         width={1080}
         height={1920}
