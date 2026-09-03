@@ -50,7 +50,7 @@ export const OnionRateVideo: React.FC<{ data: VideoData }> = ({ data }) => {
   const slide3 = sortedByQuantity.slice(28, 42);
   const slide4 = sortedByQuantity.slice(42, 56);
 
-  // ४० सेकंदांची फास्ट टाइमलाइन (३० FPS = १२०० फ्रेम्स):
+  // ४० सेकंदांची टाइमलाइन (३० FPS = १२०० फ्रेम्स):
   const isIntro = frame < 90;
   const isDashboard = frame >= 90 && frame < 270;
   const isSlide1 = frame >= 270 && frame < 480;
@@ -71,38 +71,51 @@ export const OnionRateVideo: React.FC<{ data: VideoData }> = ({ data }) => {
   return (
     <AbsoluteFill
       style={{
-        backgroundColor: "#070b14",
+        backgroundColor: "#060913",
         fontFamily: "'Noto Sans Devanagari', system-ui, sans-serif",
         color: "#ffffff",
       }}
     >
-      {/* Background Gradient */}
+      {/* १. रिच ॲग्रो पार्श्वभूमी (Realistic Agriculture Gradient + Glows) */}
       <div
         style={{
           position: "absolute",
           width: "100%",
           height: "100%",
-          background: "radial-gradient(circle at 50% 15%, #581010 0%, #070b14 70%)",
+          background: "radial-gradient(circle at 50% 12%, #831843 0%, #1e1b4b 40%, #030712 90%)",
         }}
       />
-
-      {/* १. हेडर (Top Header) */}
+      
+      {/* बॅकग्राउंड डेकोरेटिव्ह निऑन रिंग्ज */}
       <div
         style={{
           position: "absolute",
-          top: 30,
+          top: -150,
+          left: -150,
+          width: 600,
+          height: 600,
+          borderRadius: "50%",
+          background: "radial-gradient(circle, rgba(225, 29, 72, 0.25) 0%, transparent 70%)",
+        }}
+      />
+
+      {/* २. ३डी हेडर बार (ग्लास रिफ्लेक्शनसह) */}
+      <div
+        style={{
+          position: "absolute",
+          top: 28,
           left: 24,
           right: 24,
-          backgroundColor: "#b91c1c",
-          padding: "16px 24px",
-          borderRadius: 18,
-          boxShadow: "0 10px 30px rgba(0,0,0,0.6)",
+          background: "linear-gradient(180deg, #dc2626 0%, #991b1b 100%)",
+          padding: "16px 28px",
+          borderRadius: 22,
+          boxShadow: "0 14px 35px rgba(220, 38, 38, 0.4), inset 0 2px 3px rgba(255,255,255,0.4)",
           textAlign: "center",
-          border: "2px solid rgba(255,255,255,0.15)",
+          border: "2px solid rgba(255,255,255,0.3)",
           zIndex: 10,
         }}
       >
-        <h1 style={{ margin: 0, fontSize: 42, color: "#ffffff", fontWeight: 900 }}>
+        <h1 style={{ margin: 0, fontSize: 43, color: "#ffffff", fontWeight: 900, textShadow: "0 3px 6px rgba(0,0,0,0.5)" }}>
           🧅 महाराष्ट्र राज्य - कांदा बाजार भाव 🧅
         </h1>
         <div
@@ -110,9 +123,10 @@ export const OnionRateVideo: React.FC<{ data: VideoData }> = ({ data }) => {
             display: "flex",
             justifyContent: "space-between",
             marginTop: 8,
-            fontSize: 25,
+            fontSize: 26,
             color: "#fef08a",
-            fontWeight: 700,
+            fontWeight: 800,
+            textShadow: "0 2px 4px rgba(0,0,0,0.6)"
           }}
         >
           <span>📅 तारीख: {data.date}</span>
@@ -120,7 +134,7 @@ export const OnionRateVideo: React.FC<{ data: VideoData }> = ({ data }) => {
         </div>
       </div>
 
-      {/* २. इंट्रो ओव्हरव्ह्यू (० ते ३ सेकंद) */}
+      {/* ३. इंट्रो ओव्हरव्ह्यू (० ते ३ सेकंद) - ३डी हाय-टेक विजेट्स */}
       {isIntro && (
         <div
           style={{
@@ -136,39 +150,41 @@ export const OnionRateVideo: React.FC<{ data: VideoData }> = ({ data }) => {
         >
           <div
             style={{
-              backgroundColor: "rgba(30, 41, 59, 0.95)",
-              padding: "70px 30px",
-              borderRadius: 24,
+              background: "linear-gradient(135deg, rgba(15, 23, 42, 0.92) 0%, rgba(30, 41, 59, 0.85) 100%)",
+              padding: "60px 30px",
+              borderRadius: 30,
               textAlign: "center",
               border: "3px solid #38bdf8",
-              boxShadow: "0 15px 40px rgba(56, 189, 248, 0.25)",
+              boxShadow: "0 20px 50px rgba(56, 189, 248, 0.3), inset 0 0 25px rgba(56, 189, 248, 0.15)",
             }}
           >
-            <div style={{ fontSize: 36, color: "#94a3b8", fontWeight: 700 }}>आजची एकूण नोंद झालेली आवक</div>
-            <div style={{ fontSize: 90, color: "#38bdf8", fontWeight: 900, marginTop: 15 }}>
-              {totalQty.toLocaleString("en-IN")} <span style={{ fontSize: 44 }}>क्विंटल</span>
+            <div style={{ fontSize: 50, marginBottom: 10 }}>🏬</div>
+            <div style={{ fontSize: 36, color: "#cbd5e1", fontWeight: 800 }}>आजची एकूण नोंद झालेली आवक</div>
+            <div style={{ fontSize: 92, color: "#38bdf8", fontWeight: 900, marginTop: 15, textShadow: "0 4px 15px rgba(56, 189, 248, 0.5)" }}>
+              {totalQty.toLocaleString("en-IN")} <span style={{ fontSize: 44, color: "#fff" }}>क्विंटल</span>
             </div>
           </div>
 
           <div
             style={{
-              backgroundColor: "rgba(30, 41, 59, 0.95)",
-              padding: "70px 30px",
-              borderRadius: 24,
+              background: "linear-gradient(135deg, rgba(15, 23, 42, 0.92) 0%, rgba(30, 41, 59, 0.85) 100%)",
+              padding: "60px 30px",
+              borderRadius: 30,
               textAlign: "center",
-              border: "3px solid #4ade80",
-              boxShadow: "0 15px 40px rgba(74, 222, 128, 0.25)",
+              border: "3px solid #22c55e",
+              boxShadow: "0 20px 50px rgba(34, 197, 94, 0.3), inset 0 0 25px rgba(34, 197, 94, 0.15)",
             }}
           >
-            <div style={{ fontSize: 36, color: "#94a3b8", fontWeight: 700 }}>राज्याचा सरासरी मॉडेल भाव</div>
-            <div style={{ fontSize: 90, color: "#4ade80", fontWeight: 900, marginTop: 15 }}>
-              ₹{avgStatePrice} <span style={{ fontSize: 44 }}>/ क्विंटल</span>
+            <div style={{ fontSize: 50, marginBottom: 10 }}>💰</div>
+            <div style={{ fontSize: 36, color: "#cbd5e1", fontWeight: 800 }}>राज्याचा सरासरी मॉडेल भाव</div>
+            <div style={{ fontSize: 92, color: "#22c55e", fontWeight: 900, marginTop: 15, textShadow: "0 4px 15px rgba(34, 197, 94, 0.5)" }}>
+              ₹{avgStatePrice} <span style={{ fontSize: 44, color: "#fff" }}>/ क्विंटल</span>
             </div>
           </div>
         </div>
       )}
 
-      {/* ३. डॅशबोर्ड (३ ते ९ सेकंद) - दोन्ही सेक्शन्समधील गॅप पूर्णपणे भरून काढला */}
+      {/* ४. डॅशबोर्ड (३ ते ९ सेकंद) - ३डी गोल्ड बॅजेस आणि निऑन बॉर्डर */}
       {isDashboard && (
         <div
           style={{
@@ -182,26 +198,18 @@ export const OnionRateVideo: React.FC<{ data: VideoData }> = ({ data }) => {
             justifyContent: "space-between",
           }}
         >
-          {/* Top 5 Prices Section */}
-          <div
-            style={{
-              flex: 1,
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "space-between",
-              marginBottom: 16,
-            }}
-          >
+          {/* Top 5 Prices */}
+          <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "space-between", marginBottom: 16 }}>
             <div
               style={{
-                backgroundColor: "#d97706",
-                color: "#fff",
-                padding: "15px 18px",
-                borderRadius: 14,
-                fontSize: 28,
+                background: "linear-gradient(90deg, #f59e0b 0%, #d97706 100%)",
+                color: "#000",
+                padding: "14px 20px",
+                borderRadius: 16,
+                fontSize: 27,
                 fontWeight: 900,
                 textAlign: "center",
-                marginBottom: 8,
+                boxShadow: "0 6px 20px rgba(245, 158, 11, 0.4)",
               }}
             >
               🏆 आजचे टॉप ५ सर्वाधिक भाव (कमाल दर)
@@ -212,43 +220,55 @@ export const OnionRateVideo: React.FC<{ data: VideoData }> = ({ data }) => {
                 style={{
                   flex: 1,
                   margin: "4px 0",
-                  backgroundColor: "rgba(30, 41, 59, 0.95)",
+                  background: "linear-gradient(90deg, rgba(30, 41, 59, 0.95) 0%, rgba(15, 23, 42, 0.95) 100%)",
                   padding: "0 24px",
-                  borderRadius: 14,
+                  borderRadius: 16,
                   display: "flex",
                   justifyContent: "space-between",
                   alignItems: "center",
-                  borderLeft: "8px solid #f59e0b",
+                  border: "1.5px solid rgba(245, 158, 11, 0.4)",
+                  boxShadow: "0 6px 15px rgba(0,0,0,0.3)",
                 }}
               >
-                <div style={{ fontSize: 30, fontWeight: 800 }}>
-                  <span style={{ color: "#f59e0b", marginRight: 16 }}>#{idx + 1}</span>
-                  {item.market} <span style={{ fontSize: 23, color: "#94a3b8" }}>({item.variety})</span>
+                <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+                  <div
+                    style={{
+                      width: 44,
+                      height: 44,
+                      borderRadius: "50%",
+                      background: "radial-gradient(circle, #fde047 0%, #ca8a04 100%)",
+                      color: "#000",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontSize: 24,
+                      fontWeight: 900,
+                      boxShadow: "0 3px 8px rgba(0,0,0,0.4)"
+                    }}
+                  >
+                    {idx + 1}
+                  </div>
+                  <div style={{ fontSize: 29, fontWeight: 800 }}>
+                    {item.market} <span style={{ fontSize: 22, color: "#94a3b8" }}>({item.variety})</span>
+                  </div>
                 </div>
                 <div style={{ fontSize: 38, color: "#4ade80", fontWeight: 900 }}>₹{item.max_price}</div>
               </div>
             ))}
           </div>
 
-          {/* Top 5 Arrivals Section */}
-          <div
-            style={{
-              flex: 1,
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "space-between",
-            }}
-          >
+          {/* Top 5 Arrivals */}
+          <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
             <div
               style={{
-                backgroundColor: "#0284c7",
+                background: "linear-gradient(90deg, #0284c7 0%, #0369a1 100%)",
                 color: "#fff",
-                padding: "15px 18px",
-                borderRadius: 14,
-                fontSize: 28,
+                padding: "14px 20px",
+                borderRadius: 16,
+                fontSize: 27,
                 fontWeight: 900,
                 textAlign: "center",
-                marginBottom: 8,
+                boxShadow: "0 6px 20px rgba(2, 132, 199, 0.4)",
               }}
             >
               🚜 सर्वाधिक आवक असणारे टॉप ५ मार्केट
@@ -259,27 +279,46 @@ export const OnionRateVideo: React.FC<{ data: VideoData }> = ({ data }) => {
                 style={{
                   flex: 1,
                   margin: "4px 0",
-                  backgroundColor: "rgba(30, 41, 59, 0.95)",
+                  background: "linear-gradient(90deg, rgba(30, 41, 59, 0.95) 0%, rgba(15, 23, 42, 0.95) 100%)",
                   padding: "0 24px",
-                  borderRadius: 14,
+                  borderRadius: 16,
                   display: "flex",
                   justifyContent: "space-between",
                   alignItems: "center",
-                  borderLeft: "8px solid #0284c7",
+                  border: "1.5px solid rgba(56, 189, 248, 0.35)",
+                  boxShadow: "0 6px 15px rgba(0,0,0,0.3)",
                 }}
               >
-                <div style={{ fontSize: 30, fontWeight: 800 }}>
-                  <span style={{ color: "#38bdf8", marginRight: 16 }}>#{idx + 1}</span>
-                  {item.market} <span style={{ fontSize: 23, color: "#94a3b8" }}>(दर: ₹{item.avg_price})</span>
+                <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+                  <div
+                    style={{
+                      width: 44,
+                      height: 44,
+                      borderRadius: "50%",
+                      background: "radial-gradient(circle, #38bdf8 0%, #0284c7 100%)",
+                      color: "#fff",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontSize: 24,
+                      fontWeight: 900,
+                      boxShadow: "0 3px 8px rgba(0,0,0,0.4)"
+                    }}
+                  >
+                    {idx + 1}
+                  </div>
+                  <div style={{ fontSize: 29, fontWeight: 800 }}>
+                    {item.market} <span style={{ fontSize: 21, color: "#94a3b8" }}>(दर: ₹{item.avg_price})</span>
+                  </div>
                 </div>
-                <div style={{ fontSize: 38, color: "#38bdf8", fontWeight: 900 }}>{item.quantity} क्विं.</div>
+                <div style={{ fontSize: 36, color: "#38bdf8", fontWeight: 900 }}>{item.quantity} क्विं.</div>
               </div>
             ))}
           </div>
         </div>
       )}
 
-      {/* ४. टेबल स्लाईड्स (१४ मार्केट) */}
+      {/* ५. टेबल स्लाईड्स (१४ मार्केट - मॉडर्न क्रिस्टल टेबल) */}
       {isTableSlide && (
         <div style={{ position: "absolute", top: 175, left: 24, right: 24, bottom: 435, display: "flex", flexDirection: "column" }}>
           <div
@@ -291,20 +330,21 @@ export const OnionRateVideo: React.FC<{ data: VideoData }> = ({ data }) => {
               padding: "0 8px",
             }}
           >
-            <span style={{ fontSize: 26, color: "#fef08a", fontWeight: 800 }}>📌 {slideTitle}</span>
-            <span style={{ fontSize: 22, color: "#94a3b8" }}>दर प्रति क्विंटल (₹)</span>
+            <span style={{ fontSize: 26, color: "#fde047", fontWeight: 900, textShadow: "0 2px 5px rgba(0,0,0,0.5)" }}>📌 {slideTitle}</span>
+            <span style={{ fontSize: 22, color: "#cbd5e1", fontWeight: 700 }}>दर प्रति क्विंटल (₹)</span>
           </div>
 
           <div
             style={{
               display: "flex",
-              backgroundColor: "#1e293b",
+              background: "linear-gradient(180deg, #1e293b 0%, #0f172a 100%)",
               padding: "14px 16px",
-              borderRadius: "14px 14px 0 0",
+              borderRadius: "16px 16px 0 0",
               fontWeight: 800,
               fontSize: 24,
-              color: "#cbd5e1",
+              color: "#e2e8f0",
               borderBottom: "3px solid #334155",
+              boxShadow: "0 4px 15px rgba(0,0,0,0.4)"
             }}
           >
             <div style={{ flex: 2.3 }}>मार्केट</div>
@@ -318,13 +358,14 @@ export const OnionRateVideo: React.FC<{ data: VideoData }> = ({ data }) => {
           <div
             style={{
               flex: 1,
-              backgroundColor: "rgba(15, 23, 42, 0.88)",
-              borderRadius: "0 0 14px 14px",
+              backgroundColor: "rgba(15, 23, 42, 0.92)",
+              borderRadius: "0 0 16px 16px",
               overflow: "hidden",
-              border: "1px solid rgba(255,255,255,0.08)",
+              border: "1.5px solid rgba(255,255,255,0.1)",
               display: "flex",
               flexDirection: "column",
               justifyContent: "space-between",
+              boxShadow: "0 10px 30px rgba(0,0,0,0.5)"
             }}
           >
             {currentSlideData.map((item, index) => (
@@ -362,7 +403,7 @@ export const OnionRateVideo: React.FC<{ data: VideoData }> = ({ data }) => {
         </div>
       )}
 
-      {/* ५. तळभागातील कायमस्वरूपी सुरक्षित जाहिरात बॅनर (उंची ४००px) */}
+      {/* ६. तळभागातील कायमस्वरूपी सुरक्षित जाहिरात बॅनर (उंची ४००px - Neon Glow CTA) */}
       {!isOutro && (
         <div
           style={{
@@ -371,8 +412,8 @@ export const OnionRateVideo: React.FC<{ data: VideoData }> = ({ data }) => {
             left: 24,
             right: 24,
             height: "395px",
-            backgroundColor: "rgba(15, 23, 42, 0.98)",
-            borderRadius: 24,
+            background: "linear-gradient(180deg, rgba(15, 23, 42, 0.97) 0%, rgba(8, 13, 26, 0.99) 100%)",
+            borderRadius: 26,
             border: "3px dashed #eab308",
             display: "flex",
             flexDirection: "column",
@@ -380,11 +421,11 @@ export const OnionRateVideo: React.FC<{ data: VideoData }> = ({ data }) => {
             alignItems: "center",
             textAlign: "center",
             padding: "20px 30px",
-            boxShadow: "0 -12px 40px rgba(0,0,0,0.7)",
+            boxShadow: "0 -10px 40px rgba(0,0,0,0.8), inset 0 0 20px rgba(234, 179, 8, 0.15)",
             zIndex: 20,
           }}
         >
-          <div style={{ fontSize: 36, fontWeight: 900, color: "#fef08a", marginBottom: 14 }}>
+          <div style={{ fontSize: 36, fontWeight: 900, color: "#fde047", marginBottom: 14, textShadow: "0 2px 10px rgba(250, 204, 21, 0.4)" }}>
             📢 दररोजचे ताजे कांदा बाजार भाव
           </div>
           <div style={{ fontSize: 28, color: "#ffffff", fontWeight: 700, lineHeight: 1.4 }}>
@@ -393,13 +434,13 @@ export const OnionRateVideo: React.FC<{ data: VideoData }> = ({ data }) => {
           <div
             style={{
               marginTop: 24,
-              backgroundColor: "#b91c1c",
+              background: "linear-gradient(90deg, #dc2626 0%, #b91c1c 100%)",
               color: "#ffffff",
               padding: "16px 55px",
               borderRadius: 50,
               fontSize: 34,
               fontWeight: 900,
-              boxShadow: "0 8px 25px rgba(185, 28, 28, 0.7)",
+              boxShadow: "0 10px 30px rgba(220, 38, 38, 0.6), inset 0 2px 3px rgba(255,255,255,0.4)",
               display: "flex",
               alignItems: "center",
               gap: 15,
@@ -414,11 +455,11 @@ export const OnionRateVideo: React.FC<{ data: VideoData }> = ({ data }) => {
         </div>
       )}
 
-      {/* ६. आउट्रो स्क्रीन (३७ ते ४० सेकंद) */}
+      {/* ७. अंतिम आउट्रो स्क्रीन (३७ ते ४० सेकंद - पाचव्या रेफरन्स इमेजसारखी ३डी फिनिशिंग) */}
       {isOutro && (
         <AbsoluteFill
           style={{
-            backgroundColor: "rgba(7, 11, 20, 0.98)",
+            background: "radial-gradient(circle at 50% 30%, #831843 0%, #090d16 85%)",
             display: "flex",
             flexDirection: "column",
             justifyContent: "center",
@@ -428,23 +469,39 @@ export const OnionRateVideo: React.FC<{ data: VideoData }> = ({ data }) => {
             zIndex: 30,
           }}
         >
-          <div style={{ fontSize: 110 }}>🧅</div>
+          <div style={{ fontSize: 130, filter: "drop-shadow(0 15px 25px rgba(0,0,0,0.6))" }}>🧅</div>
           <h2 style={{ fontSize: 52, color: "#ffffff", marginTop: 25, lineHeight: 1.4, fontWeight: 900 }}>
             दररोजच्या ताज्या बाजारभावासाठी आपल्या पेजला आत्ताच <span style={{ color: "#facc15" }}>फॉलो आणि सबस्क्राईब करा!</span>
           </h2>
           <div
             style={{
               marginTop: 40,
-              backgroundColor: "#b91c1c",
+              background: "linear-gradient(90deg, #dc2626 0%, #b91c1c 100%)",
               color: "#ffffff",
-              padding: "20px 65px",
+              padding: "22px 70px",
               borderRadius: 60,
               fontSize: 36,
               fontWeight: "bold",
-              boxShadow: "0 15px 35px rgba(185, 28, 28, 0.7)",
+              boxShadow: "0 18px 40px rgba(220, 38, 38, 0.7), inset 0 2px 4px rgba(255,255,255,0.4)",
             }}
           >
             🔔 Like, Share & Subscribe
+          </div>
+
+          {/* ३डी व्हॅल्यू बॅजेस (रेफरन्स इमेजप्रमाणे) */}
+          <div style={{ display: "flex", gap: 30, marginTop: 50 }}>
+            <div style={{ background: "rgba(30,41,59,0.8)", padding: "16px 24px", borderRadius: 20, border: "1.5px solid rgba(255,255,255,0.2)" }}>
+              <div style={{ fontSize: 32 }}>🔔</div>
+              <div style={{ fontSize: 20, fontWeight: 800, color: "#fde047", marginTop: 6 }}>ताजे दर</div>
+            </div>
+            <div style={{ background: "rgba(30,41,59,0.8)", padding: "16px 24px", borderRadius: 20, border: "1.5px solid rgba(255,255,255,0.2)" }}>
+              <div style={{ fontSize: 32 }}>📈</div>
+              <div style={{ fontSize: 20, fontWeight: 800, color: "#38bdf8", marginTop: 6 }}>बाजार विश्लेषण</div>
+            </div>
+            <div style={{ background: "rgba(30,41,59,0.8)", padding: "16px 24px", borderRadius: 20, border: "1.5px solid rgba(255,255,255,0.2)" }}>
+              <div style={{ fontSize: 32 }}>🚜</div>
+              <div style={{ fontSize: 20, fontWeight: 800, color: "#4ade80", marginTop: 6 }}>शेतकरी उपयुक्त माहिती</div>
+            </div>
           </div>
         </AbsoluteFill>
       )}
