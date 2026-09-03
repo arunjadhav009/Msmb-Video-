@@ -21,7 +21,7 @@ export const OnionRateVideo: React.FC<{ data: VideoData }> = ({ data }) => {
 
   const records = data?.records || [];
 
-  // १. टॉप ५ कमाल भाव
+  // १. टॉप ५ कमाल भाव (उपलब्ध डेटावरून डायनॅमिक)
   const topPrices = [...records]
     .sort((a, b) => {
       const pA = parseFloat(String(a.max_price).replace(/[^0-9.-]+/g, "")) || 0;
@@ -30,7 +30,7 @@ export const OnionRateVideo: React.FC<{ data: VideoData }> = ({ data }) => {
     })
     .slice(0, 5);
 
-  // २. संपूर्ण डेटा आवक (Quantity) High to Low नुसार
+  // २. संपूर्ण डेटा आवक (Quantity) नुसार उतरत्या क्रमाने (High to Low)
   const sortedByQuantity = [...records].sort((a, b) => {
     const qA = parseFloat(String(a.quantity).replace(/[^0-9.-]+/g, "")) || 0;
     const qB = parseFloat(String(b.quantity).replace(/[^0-9.-]+/g, "")) || 0;
@@ -44,29 +44,39 @@ export const OnionRateVideo: React.FC<{ data: VideoData }> = ({ data }) => {
     ? Math.round(records.reduce((acc, curr) => acc + (parseFloat(curr.avg_price) || 0), 0) / records.length)
     : 0;
 
-  // १४ - १४ चे ४ लॉट्स
-  const slide1 = sortedByQuantity.slice(0, 14);
-  const slide2 = sortedByQuantity.slice(14, 28);
-  const slide3 = sortedByQuantity.slice(28, 42);
-  const slide4 = sortedByQuantity.slice(42, 56);
+  // ३. डायनॅमिक चंक्स: जितका डेटा येईल त्यानुसार १४-१४ च्या स्लाईड्स तयार करणे (जास्तीत जास्त ४ स्लाईड्स)
+  const chunkSize = 14;
+  const slides: MarketRecord[][] = [];
+  for (let i = 0; i < sortedByQuantity.length && slides.length < 4; i += chunkSize) {
+    slides.push(sortedByQuantity.slice(i, i + chunkSize));
+  }
+  const totalSlides = Math.max(1, slides.length);
 
-  // ४० सेकंदांची टाइमलाइन (३० FPS = १२०० फ्रेम्स):
+  // ४. डायनॅमिक टाइमलाइन विभागणी (एकूण १२०० फ्रेम्स = ४० सेकंद)
+  // ० ते ९० (०-३ से): इंट्रो
+  // ९० ते २७० (३-९ से): डॅशबोर्ड
+  // २७० ते १११० (९-३७ से = ८४० फ्रेम्स): उपलब्ध स्लाईड्समध्ये समान वाटप
+  // १११० ते १२०० (३७-४० से): आउट्रो
   const isIntro = frame < 90;
   const isDashboard = frame >= 90 && frame < 270;
-  const isSlide1 = frame >= 270 && frame < 480;
-  const isSlide2 = frame >= 480 && frame < 690;
-  const isSlide3 = frame >= 690 && frame < 900;
-  const isSlide4 = frame >= 900 && frame < 1110;
   const isOutro = frame >= 1110;
+  const isTablePhase = frame >= 270 && frame < 1110;
 
+  // उपलब्ध स्लाईड्सनुसार चालू स्लाईड इंडेक्स ठरवणे
+  let currentSlideIndex = 0;
   let currentSlideData: MarketRecord[] = [];
   let slideTitle = "";
-  if (isSlide1) { currentSlideData = slide1; slideTitle = "मार्केट भाव (आवक रँक: १ ते १४)"; }
-  else if (isSlide2) { currentSlideData = slide2; slideTitle = "मार्केट भाव (आवक रँक: १५ ते २८)"; }
-  else if (isSlide3) { currentSlideData = slide3; slideTitle = "मार्केट भाव (आवक रँक: २९ ते ४२)"; }
-  else if (isSlide4) { currentSlideData = slide4; slideTitle = "मार्केट भाव (आवक रँक: ४३ ते ५६)"; }
 
-  const isTableSlide = isSlide1 || isSlide2 || isSlide3 || isSlide4;
+  if (isTablePhase) {
+    const tableFrames = frame - 270;
+    const framesPerSlide = 840 / totalSlides;
+    currentSlideIndex = Math.min(Math.floor(tableFrames / framesPerSlide), totalSlides - 1);
+    currentSlideData = slides[currentSlideIndex] || [];
+
+    const startRank = currentSlideIndex * chunkSize + 1;
+    const endRank = startRank + currentSlideData.length - 1;
+    slideTitle = `मार्केट भाव (आवक रँक: ${startRank} ते ${endRank})`;
+  }
 
   return (
     <AbsoluteFill
@@ -76,7 +86,7 @@ export const OnionRateVideo: React.FC<{ data: VideoData }> = ({ data }) => {
         color: "#ffffff",
       }}
     >
-      {/* १. रिच ॲग्रो पार्श्वभूमी (Realistic Agriculture Gradient + Glows) */}
+      {/* १. बॅकग्राउंड लेयर */}
       <div
         style={{
           position: "absolute",
@@ -85,8 +95,6 @@ export const OnionRateVideo: React.FC<{ data: VideoData }> = ({ data }) => {
           background: "radial-gradient(circle at 50% 12%, #831843 0%, #1e1b4b 40%, #030712 90%)",
         }}
       />
-      
-      {/* बॅकग्राउंड डेकोरेटिव्ह निऑन रिंग्ज */}
       <div
         style={{
           position: "absolute",
@@ -99,7 +107,7 @@ export const OnionRateVideo: React.FC<{ data: VideoData }> = ({ data }) => {
         }}
       />
 
-      {/* २. ३डी हेडर बार (ग्लास रिफ्लेक्शनसह) */}
+      {/* २. हेडर बार */}
       <div
         style={{
           position: "absolute",
@@ -126,7 +134,7 @@ export const OnionRateVideo: React.FC<{ data: VideoData }> = ({ data }) => {
             fontSize: 26,
             color: "#fef08a",
             fontWeight: 800,
-            textShadow: "0 2px 4px rgba(0,0,0,0.6)"
+            textShadow: "0 2px 4px rgba(0,0,0,0.6)",
           }}
         >
           <span>📅 तारीख: {data.date}</span>
@@ -134,7 +142,7 @@ export const OnionRateVideo: React.FC<{ data: VideoData }> = ({ data }) => {
         </div>
       </div>
 
-      {/* ३. इंट्रो ओव्हरव्ह्यू (० ते ३ सेकंद) - ३डी हाय-टेक विजेट्स */}
+      {/* ३. इंट्रो ओव्हरव्ह्यू (० ते ३ सेकंद) */}
       {isIntro && (
         <div
           style={{
@@ -184,7 +192,7 @@ export const OnionRateVideo: React.FC<{ data: VideoData }> = ({ data }) => {
         </div>
       )}
 
-      {/* ४. डॅशबोर्ड (३ ते ९ सेकंद) - ३डी गोल्ड बॅजेस आणि निऑन बॉर्डर */}
+      {/* ४. डॅशबोर्ड (३ ते ९ सेकंद) - नो गॅप */}
       {isDashboard && (
         <div
           style={{
@@ -198,7 +206,7 @@ export const OnionRateVideo: React.FC<{ data: VideoData }> = ({ data }) => {
             justifyContent: "space-between",
           }}
         >
-          {/* Top 5 Prices */}
+          {/* Top Prices */}
           <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "space-between", marginBottom: 16 }}>
             <div
               style={{
@@ -243,7 +251,7 @@ export const OnionRateVideo: React.FC<{ data: VideoData }> = ({ data }) => {
                       justifyContent: "center",
                       fontSize: 24,
                       fontWeight: 900,
-                      boxShadow: "0 3px 8px rgba(0,0,0,0.4)"
+                      boxShadow: "0 3px 8px rgba(0,0,0,0.4)",
                     }}
                   >
                     {idx + 1}
@@ -257,7 +265,7 @@ export const OnionRateVideo: React.FC<{ data: VideoData }> = ({ data }) => {
             ))}
           </div>
 
-          {/* Top 5 Arrivals */}
+          {/* Top Arrivals */}
           <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
             <div
               style={{
@@ -302,7 +310,7 @@ export const OnionRateVideo: React.FC<{ data: VideoData }> = ({ data }) => {
                       justifyContent: "center",
                       fontSize: 24,
                       fontWeight: 900,
-                      boxShadow: "0 3px 8px rgba(0,0,0,0.4)"
+                      boxShadow: "0 3px 8px rgba(0,0,0,0.4)",
                     }}
                   >
                     {idx + 1}
@@ -318,8 +326,8 @@ export const OnionRateVideo: React.FC<{ data: VideoData }> = ({ data }) => {
         </div>
       )}
 
-      {/* ५. टेबल स्लाईड्स (१४ मार्केट - मॉडर्न क्रिस्टल टेबल) */}
-      {isTableSlide && (
+      {/* ५. डायनॅमिक टेबल स्लाईड्स (डेटा कमी असो वा जास्त, गॅप कधीच पडणार नाही) */}
+      {isTablePhase && (
         <div style={{ position: "absolute", top: 175, left: 24, right: 24, bottom: 435, display: "flex", flexDirection: "column" }}>
           <div
             style={{
@@ -344,7 +352,7 @@ export const OnionRateVideo: React.FC<{ data: VideoData }> = ({ data }) => {
               fontSize: 24,
               color: "#e2e8f0",
               borderBottom: "3px solid #334155",
-              boxShadow: "0 4px 15px rgba(0,0,0,0.4)"
+              boxShadow: "0 4px 15px rgba(0,0,0,0.4)",
             }}
           >
             <div style={{ flex: 2.3 }}>मार्केट</div>
@@ -365,28 +373,28 @@ export const OnionRateVideo: React.FC<{ data: VideoData }> = ({ data }) => {
               display: "flex",
               flexDirection: "column",
               justifyContent: "space-between",
-              boxShadow: "0 10px 30px rgba(0,0,0,0.5)"
+              boxShadow: "0 10px 30px rgba(0,0,0,0.5)",
             }}
           >
             {currentSlideData.map((item, index) => (
               <div
                 key={index}
                 style={{
+                  flex: 1,
                   display: "flex",
                   alignItems: "center",
                   padding: "0 16px",
-                  height: "73px",
                   boxSizing: "border-box",
                   backgroundColor: index % 2 === 0 ? "rgba(255,255,255,0.02)" : "rgba(255,255,255,0.06)",
                   borderBottom: "1px solid rgba(255,255,255,0.06)",
-                  fontSize: 25,
+                  fontSize: currentSlideData.length > 10 ? 25 : 28,
                   fontWeight: 700,
                 }}
               >
                 <div style={{ flex: 2.3, color: "#ffffff", fontWeight: 800, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
                   {item.market}
                 </div>
-                <div style={{ flex: 1.1, textAlign: "center", color: "#94a3b8", fontSize: 21 }}>
+                <div style={{ flex: 1.1, textAlign: "center", color: "#94a3b8", fontSize: currentSlideData.length > 10 ? 21 : 24 }}>
                   {item.variety || "लोकल"}
                 </div>
                 <div style={{ flex: 1.3, textAlign: "center", color: "#38bdf8", fontWeight: 900 }}>
@@ -394,7 +402,7 @@ export const OnionRateVideo: React.FC<{ data: VideoData }> = ({ data }) => {
                 </div>
                 <div style={{ flex: 1.1, textAlign: "center", color: "#f87171" }}>₹{item.min_price}</div>
                 <div style={{ flex: 1.1, textAlign: "center", color: "#38bdf8" }}>₹{item.max_price}</div>
-                <div style={{ flex: 1.4, textAlign: "center", color: "#4ade80", fontWeight: 900, fontSize: 28 }}>
+                <div style={{ flex: 1.4, textAlign: "center", color: "#4ade80", fontWeight: 900, fontSize: currentSlideData.length > 10 ? 28 : 32 }}>
                   ₹{item.avg_price}
                 </div>
               </div>
@@ -403,7 +411,7 @@ export const OnionRateVideo: React.FC<{ data: VideoData }> = ({ data }) => {
         </div>
       )}
 
-      {/* ६. तळभागातील कायमस्वरूपी सुरक्षित जाहिरात बॅनर (उंची ४००px - Neon Glow CTA) */}
+      {/* ६. कायमस्वरूपी तळभागातील जाहिरात बॅनर */}
       {!isOutro && (
         <div
           style={{
@@ -455,7 +463,7 @@ export const OnionRateVideo: React.FC<{ data: VideoData }> = ({ data }) => {
         </div>
       )}
 
-      {/* ७. अंतिम आउट्रो स्क्रीन (३७ ते ४० सेकंद - पाचव्या रेफरन्स इमेजसारखी ३डी फिनिशिंग) */}
+      {/* ७. आउट्रो स्क्रीन (३७ ते ४० सेकंद) */}
       {isOutro && (
         <AbsoluteFill
           style={{
@@ -488,7 +496,6 @@ export const OnionRateVideo: React.FC<{ data: VideoData }> = ({ data }) => {
             🔔 Like, Share & Subscribe
           </div>
 
-          {/* ३डी व्हॅल्यू बॅजेस (रेफरन्स इमेजप्रमाणे) */}
           <div style={{ display: "flex", gap: 30, marginTop: 50 }}>
             <div style={{ background: "rgba(30,41,59,0.8)", padding: "16px 24px", borderRadius: 20, border: "1.5px solid rgba(255,255,255,0.2)" }}>
               <div style={{ fontSize: 32 }}>🔔</div>
